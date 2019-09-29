@@ -33,6 +33,7 @@ namespace API
 
                 }    
             );
+            //, x => x.MigrationsAssembly("Persistent.Migrations") 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
