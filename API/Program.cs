@@ -31,6 +31,9 @@ namespace API
                 {
                     var context = services.GetRequiredService<DataContext>();
                     context.Database.Migrate(); //Apply any pending contexts to Database
+                    //Seed Table Activities
+                    Seed.SeedData(context);
+
                 }
                 catch(Exception ex)
                 {

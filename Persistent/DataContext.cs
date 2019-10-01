@@ -13,6 +13,8 @@ namespace Persistent
 
         public DbSet<Value> Values { get; set; }
 
+        public DbSet<Activity> Activities { get; set; }
+
         //Seed Data into table
         protected override void OnModelCreating(ModelBuilder builder)
         {
