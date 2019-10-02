@@ -8,6 +8,7 @@
 
 >> Add Migration using EF: dotnet ef migrations add InitialCommitSetupProject -p Persistent/ -s API/
 
+
 >> Update Database: dotnet ef database update -p Persistent/ -s API/
 
 >> Remove Migration: dotnet ef migrations remove --project Persistent -s API
@@ -19,6 +20,9 @@ Watch Run: dotnet watch run (works only inside the startup project)
 >> Create application: npx create-react-app my-app --use-npm --typescript
 >> Start: npm start
 
+
+### Back end installation
+MediatR 7.0
 
 ### Front end installation
 ##### Axios: npm install axios
