@@ -1,51 +1,35 @@
-import React from 'react';
-import { Component } from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import { Header, Icon, List } from 'semantic-ui-react';
 import { IActivity } from '../models/activity';
 
-interface IState {
-  activities: IActivity[]
-};
 
+const App = () => {
 
-class App extends Component<{}, IState> {
-  readonly state : IState = {
-    activities: []
-  }
+  const [activities, setActivities]=useState<IActivity[]>([]);
 
-  componentDidMount() {
+  useEffect(() => {
     axios.get<IActivity[]>('https://localhost:44333/api/activities')
       .then((response) => {
-        this.setState({
-          activities: response.data
-        })
-      })
+        setActivities(response.data)
+      });
+  }, []);
 
 
-  }
+ return (
+    <div>
+      <Header as='h2'>
+        <Icon name='users' />
+        <Header.Content>Reactivity</Header.Content>
+      </Header>
+      <List>
+        {activities.map((activity) => (
+          <List.Item key={activity.id}>{activity.title}</List.Item>
+        ))}
+      </List>
+    </div>
+  );
 
-  render() {
-    return (
-      <div>
-        <Header as='h2'>
-          <Icon name='users' />
-          <Header.Content>Reactivity</Header.Content>
-        </Header>
-        <List>
-          {this.state.activities.map((activity) => (
-            <List.Item key={activity.id}>{activity.title}</List.Item>
-          ))}
-
-        </List>
-        <ul>
-         
-
-        </ul>
-
-      </div>
-    );
-  }
 
 
 }
