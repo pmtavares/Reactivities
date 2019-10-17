@@ -27,3 +27,4 @@ MediatR 7.0
 ### Front end installation
 ##### Axios: npm install axios
 ##### Semantic UI: npm install semantic-ui-react 
+##### uuid for Guid
