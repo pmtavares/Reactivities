@@ -1,4 +1,4 @@
-import React, {useState, useEffect, Fragment, SyntheticEvent} from 'react';
+import React, {useState, useEffect, Fragment, SyntheticEvent, useContext} from 'react';
 //import axios from 'axios';
 import { Container } from 'semantic-ui-react';
 import { IActivity } from '../models/activity';
@@ -6,9 +6,12 @@ import NavBar from '../../features/nav/NavBar';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 import agent from '../api/agent';
 import LoadingComponent from './LoadingComponent';
+import ActivityStore from '../stores/activityStore';
+import {observer} from 'mobx-react-lite';
 
 
 const App = () => {
+  const activityStore = useContext(ActivityStore);
   const [activities, setActivities]=useState<IActivity[]>([]);
   const [selectedActivity, setSelectedActivity] = useState<IActivity | null>(null);
   const [editMode, setEditMode] = useState(false);
@@ -24,13 +27,6 @@ const App = () => {
   {
       setSelectedActivity(activities.filter(a=> a.id === id)[0]);
       setEditMode(false);
-  }
-
-  //Function to handle the form for creation of activities and details
-  const handleOpenCreateForm = () =>
-  {
-      setSelectedActivity(null);
-      setEditMode(true);
   }
 
 
@@ -66,34 +62,22 @@ const handleDeleteActivity = (event: SyntheticEvent<HTMLButtonElement> ,id: stri
 
   useEffect(() => {
     //axios.get<IActivity[]>('https://localhost:44333/api/activities') // No need for this line as I create agente fie to handle
-    agent.Activities.list()
-      .then((response) => {
-        let activities:IActivity[] = [];
-        response.forEach(activity =>{
-          activity.date = activity.date.split('.')[0];
-          activities.push(activity);
-        })
-        //setActivities(activities);
-        setActivities(response)
-      }).then(() => setLoading(false));
-  }, []);
+    activityStore.loadActivities();
+  }, [activityStore]);
 
   //After setting loading to false above, we can put the following code
-  if(loading) return <LoadingComponent content='Loading activities...' />
+  if(activityStore.loadingInitial) return <LoadingComponent content='Loading activities...' />
 
 
  return (
     <Fragment>
-      <NavBar openCreateForm = {handleOpenCreateForm} />
+      <NavBar />
       <Container style={{marginTop: '100px'}}>
           <ActivityDashboard 
-            activities={activities} 
+            activities={activityStore.activities} 
             selectActivity={handleSelectActivity}
-            selectedActivity ={selectedActivity}
-            editMode = {editMode}
             setEditMode = {setEditMode}
             setSelectedActivity = {setSelectedActivity}
-            createActivity = {handleCreateActivity}
             editActivity = {handleEditActivity}
             deleteActivity = {handleDeleteActivity}
             submitting = {submitting}
@@ -108,4 +92,4 @@ const handleDeleteActivity = (event: SyntheticEvent<HTMLButtonElement> ,id: stri
 
 }
 
-export default App;
+export default observer(App);
