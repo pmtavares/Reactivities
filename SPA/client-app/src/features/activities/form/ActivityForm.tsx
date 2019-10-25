@@ -4,6 +4,7 @@ import { IActivity } from '../../../app/models/activity';
 import { useState } from 'react';
 import {v4 as uuid} from 'uuid';
 import ActivityStore from '../../../app/stores/activityStore';
+import {observer} from 'mobx-react-lite';
 
 interface IProps
 {
@@ -77,4 +78,4 @@ const ActivityForm: React.FC<IProps> = ({ activity: InitialFormState }) => {
     );
 }
 
-export default ActivityForm
+export default observer(ActivityForm)

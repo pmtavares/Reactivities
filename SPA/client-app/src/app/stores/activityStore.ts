@@ -1,4 +1,4 @@
-import {observable, action, computed} from 'mobx';
+import {observable, action, computed, configure, runInAction} from 'mobx';
 import { createContext, SyntheticEvent } from 'react';
 import { IActivity } from '../models/activity';
 import agent from '../api/agent';
@@ -8,6 +8,8 @@ import agent from '../api/agent';
 * In case we get a warning, go to tsconfig.js and add "experimentalDecorator": true
 *
 */
+
+configure({enforceActions: 'always'});
 
 class ActivityStore {
     @observable activityRegistry = new Map();
@@ -28,20 +30,23 @@ class ActivityStore {
     @action loadActivities = async () =>
     {
         this.loadingInitial = true;        
-        try{
+        try
+        {
             const activities = await agent.Activities.list();
-            activities.forEach(activity =>{
-                activity.date = activity.date.split('.')[0];
-                this.activityRegistry.set(activity.id, activity);
-              });            
+            runInAction(()=> {
+                activities.forEach(activity =>{
+                    activity.date = activity.date.split('.')[0];
+                    this.activityRegistry.set(activity.id, activity);
+                }); 
+                this.loadingInitial = false;    
+            })                
         }
         catch(error)
         {
-            console.log(error);
-        }
-        finally
-        {
-            this.loadingInitial = false
+            runInAction(()=> {
+                this.loadingInitial = false;
+                console.log(error);
+            })            
         }
     }
 
@@ -56,17 +61,21 @@ class ActivityStore {
         this.submitting = true;
         try{
             await  agent.Activities.create(activity);
-            this.activityRegistry.set(activity.id, activity);
-            this.selectedActivity = this.activityRegistry.get(activity.id);
-            this.editMode = false;
-        
-        }catch(error)
-        {
-            console.log(error);
+            runInAction('Creating activity',()=> {
+                this.activityRegistry.set(activity.id, activity);
+                this.selectedActivity = this.activityRegistry.get(activity.id);
+                this.editMode = false;
+                this.submitting = false;
+            })
+            
+    
         }
-        finally
+        catch(error)
         {
-            this.submitting = false;
+            runInAction(()=> {
+                this.submitting = false;
+            })
+            console.log(error);
         }
     }
 
@@ -75,18 +84,20 @@ class ActivityStore {
         this.submitting = true;
         try{
             await agent.Activities.update(activity);
-            this.activityRegistry.set(activity.id, activity);
-            this.selectedActivity = activity;
-            this.editMode = false;          
-
+            runInAction(()=> {
+                this.activityRegistry.set(activity.id, activity);
+                this.selectedActivity = activity;
+                this.editMode = false;         
+                this.submitting = false;
+            })
+            
         }
         catch(error)
         {
-            console.log(error);
-        }
-        finally
-        {
-            this.submitting = false;
+            runInAction(()=> {
+                console.log(error);
+                this.submitting = false;
+            })
         }
     }
 
@@ -118,16 +129,21 @@ class ActivityStore {
         this.target = event.currentTarget.name;
         try{
             await agent.Activities.delete(id);
-            this.activityRegistry.delete(id);                       
+            runInAction('Deleting activity',()=> {
+                this.activityRegistry.delete(id);     
+                this.submitting = false;
+                this.target = ''; 
+            })
+                 
         }
         catch(error)
         {
-            console.log(error);
-        }
-        finally
-        {
-            this.submitting = false;
-            this.target = '';
+            runInAction(()=> {
+                console.log(error);
+                this.submitting = false;
+                this.target = '';
+            })
+
         }
     }
 }
