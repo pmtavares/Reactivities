@@ -1,7 +1,8 @@
 import {observable, action, computed} from 'mobx';
-import { createContext } from 'react';
+import { createContext, SyntheticEvent } from 'react';
 import { IActivity } from '../models/activity';
 import agent from '../api/agent';
+
 
 /*
 * In case we get a warning, go to tsconfig.js and add "experimentalDecorator": true
@@ -9,18 +10,19 @@ import agent from '../api/agent';
 */
 
 class ActivityStore {
-    
+    @observable activityRegistry = new Map();
     @observable activities: IActivity[]=[];
     @observable loadingInitial = false;
     @observable selectedActivity: IActivity | undefined;
     @observable editMode = false;
     @observable submitting = false;
+    @observable target = '';
 
     //When inserting a new activity, sort by date
     @computed get activityByDate()
     {
-        return this.activities.sort((a,b) => Date.parse(a.date) - Date.parse(b.date));    
-
+        return Array.from(this.activityRegistry.values())
+                .sort((a,b) => Date.parse(a.date) - Date.parse(b.date));
     }
 
     @action loadActivities = async () =>
@@ -30,7 +32,7 @@ class ActivityStore {
             const activities = await agent.Activities.list();
             activities.forEach(activity =>{
                 activity.date = activity.date.split('.')[0];
-                this.activities.push(activity);
+                this.activityRegistry.set(activity.id, activity);
               });            
         }
         catch(error)
@@ -45,7 +47,7 @@ class ActivityStore {
 
     @action selectActivity = (id: string) =>
     {
-        this.selectedActivity = this.activities.find(a=> a.id === id);
+        this.selectedActivity = this.activityRegistry.get(id);
         this.editMode = false;
     }
 
@@ -54,8 +56,8 @@ class ActivityStore {
         this.submitting = true;
         try{
             await  agent.Activities.create(activity);
-            this.activities.push(activity);
-            this.selectedActivity = this.activities.find(a=> a.id === activity.id);
+            this.activityRegistry.set(activity.id, activity);
+            this.selectedActivity = this.activityRegistry.get(activity.id);
             this.editMode = false;
         
         }catch(error)
@@ -68,10 +70,65 @@ class ActivityStore {
         }
     }
 
+    @action editActivity = async (activity: IActivity) =>
+    {
+        this.submitting = true;
+        try{
+            await agent.Activities.update(activity);
+            this.activityRegistry.set(activity.id, activity);
+            this.selectedActivity = activity;
+            this.editMode = false;          
+
+        }
+        catch(error)
+        {
+            console.log(error);
+        }
+        finally
+        {
+            this.submitting = false;
+        }
+    }
+
+    @action openEditForm = (id: string) => {
+        this.selectedActivity = this.activityRegistry.get(id);
+        this.editMode = true;
+    }
+
     @action openCreateForm = () =>
     {
         this.editMode = true;
         this.selectedActivity = undefined;
+    }
+
+    @action cancelSelectedActivity =() =>
+    {
+        this.selectedActivity = undefined;
+        
+    }
+
+    @action cancelEditForm =() =>
+    {
+        this.editMode = false;
+        
+    }
+
+    @action deleteActivity= async (event: SyntheticEvent<HTMLButtonElement> , id: string) => {
+        this.submitting = true;
+        this.target = event.currentTarget.name;
+        try{
+            await agent.Activities.delete(id);
+            this.activityRegistry.delete(id);                       
+        }
+        catch(error)
+        {
+            console.log(error);
+        }
+        finally
+        {
+            this.submitting = false;
+            this.target = '';
+        }
     }
 }
 
