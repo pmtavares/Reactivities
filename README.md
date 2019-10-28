@@ -29,3 +29,4 @@ MediatR 7.0
 ##### Semantic UI: npm install semantic-ui-react 
 ##### uuid for Guid
 ##### npm install mobx mobx-react-lite (5.14.2, 1.5.0)
+##### npm install react-router-dom
