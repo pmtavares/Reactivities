@@ -1,7 +1,24 @@
 import axios, { AxiosResponse } from 'axios';
 import { IActivity } from '../models/activity';
+import { history } from '../..';
 
 axios.defaults.baseURL = 'https://localhost:44333/api';
+
+//Midleware for errors
+axios.interceptors.response.use(undefined, error =>{
+    console.log(error.response);
+    const {status, data, config} = error.response;
+    if(status === 404)
+    {
+        history.push('/notfound');
+    }
+
+    if(status === 400 && config.method === 'get' && data.errors.hasOwnProperty('id'))
+    {
+        history.push('/notfound');
+    }
+
+});
 
 const responseBody = (response: AxiosResponse) => response.data;
 
