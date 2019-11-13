@@ -30,3 +30,4 @@ MediatR 7.0
 ##### uuid for Guid
 ##### npm install mobx mobx-react-lite (5.14.2, 1.5.0)
 ##### npm install react-router-dom
+##### npm install react-toastify
