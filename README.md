@@ -31,3 +31,5 @@ MediatR 7.0
 ##### npm install mobx mobx-react-lite (5.14.2, 1.5.0)
 ##### npm install react-router-dom
 ##### npm install react-toastify
+##### npm install react-final-form final-form (Form validations)
+##### npm install react-widgets react-widgets-date-fns
