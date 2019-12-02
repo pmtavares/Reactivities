@@ -1,8 +1,10 @@
 ﻿using Domain;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Persistent
 {
@@ -13,8 +15,38 @@ namespace Persistent
          * Seed data to database automaticaly
          * 
          */
-        public static void SeedData(DataContext context)
+        public static async Task SeedData(DataContext context, UserManager<AppUser> useManager)
         {
+
+            if (!useManager.Users.Any())
+            {
+                var users = new List<AppUser>
+                {
+                    new AppUser
+                    {
+                        DisplayName = "Pedro",
+                        UserName = "pedro",
+                        Email = "pedro@pedro.com"
+                    },
+                    new AppUser
+                    {
+                        DisplayName = "Tavares",
+                        UserName = "tavares",
+                        Email = "tavares@tavares.com"
+                    },
+                    new AppUser
+                    {
+                        DisplayName = "Mauricio",
+                        UserName = "mauricio",
+                        Email = "mauricio@mauricio.com"
+                    }
+                };
+                foreach(var user in users)
+                {
+                   await useManager.CreateAsync(user, "Pa$$w0rd");
+                }
+
+            }
 
             if (!context.Activities.Any())
             {

@@ -7,6 +7,7 @@
 ### Commands Dotnet
 
 >> Add Migration using EF: dotnet ef migrations add InitialCommitSetupProject -p Persistent/ -s API/
+>> dotnet ef migrations add "AddedIdentity" -p Persistent/ -s API/
 
 
 >> Update Database: dotnet ef database update -p Persistent/ -s API/
@@ -33,3 +34,4 @@ MediatR 7.0
 ##### npm install react-toastify
 ##### npm install react-final-form final-form (Form validations)
 ##### npm install react-widgets react-widgets-date-fns
+##### npm install revalidate
