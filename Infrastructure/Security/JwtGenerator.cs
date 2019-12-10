@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,12 @@ namespace Infrastructure.Security
 {
     public class JwtGenerator : IJwtGenerator
     {
+        private readonly SymmetricSecurityKey _key;
+        public JwtGenerator(IConfiguration config)
+        {
+            //_key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("Jwt").GetSection("TokenKey").Value));
+        }
         public string CreateToken(AppUser user)
         {
             //Build up the token
@@ -21,8 +28,8 @@ namespace Infrastructure.Security
             };
 
             //generate signing credentials
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("my ultra secret key"));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("my ultra secret key"));
+            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 
 
             //Token
