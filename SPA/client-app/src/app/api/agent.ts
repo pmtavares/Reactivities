@@ -2,6 +2,8 @@ import axios, { AxiosResponse } from 'axios';
 import { IActivity } from '../models/activity';
 import { history } from '../..';
 import { toast } from 'react-toastify';
+import { IUser, IUserFormValues } from '../models/user';
+import { request } from 'http';
 
 axios.defaults.baseURL = 'https://localhost:44333/api';
 
@@ -54,6 +56,13 @@ const Activities = {
     delete: (id: string) => resquests.del(`/activities/${id}`)
 }
 
+const User = {
+    current: (): Promise<IUser> => resquests.get('/user'),
+    login: (user: IUserFormValues): Promise<IUser> => resquests.post('/user/login', user),
+    register: (user: IUserFormValues): Promise<IUser> => resquests.post('/user/register', user)
+}
+
 export default {
-    Activities
+    Activities,
+    User
 }
