@@ -7,6 +7,20 @@ import { request } from 'http';
 
 axios.defaults.baseURL = 'https://localhost:44333/api';
 
+//Midleware for requests
+axios.interceptors.request.use((config) => {
+    const token = window.localStorage.getItem('jwt');
+    if(token)
+    {
+        config.headers.Authorization = `Bearer ${token}`;
+        
+    };
+    return config
+}, error => {
+    return Promise.reject(error);
+})
+
+
 //Midleware for errors
 axios.interceptors.response.use(undefined, error =>{
     if(error.message === "Network Error" && !error.response)
