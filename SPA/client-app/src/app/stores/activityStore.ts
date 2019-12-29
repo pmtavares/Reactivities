@@ -4,15 +4,24 @@ import { IActivity } from '../models/activity';
 import agent from '../api/agent';
 import {history} from '../../index';
 import { toast } from 'react-toastify';
+import { RootStore } from './rootStore';
 
 /*
 * In case we get a warning, go to tsconfig.js and add "experimentalDecorator": true
 *
 */
 
-configure({enforceActions: 'always'});
 
-class ActivityStore {
+
+export default class ActivityStore {
+    //rootStore: RootStore;
+
+    constructor()
+    {
+        //this.rootStore = rootStore;
+    }
+
+
     @observable activityRegistry = new Map();
     @observable activities: IActivity[]=[];
     @observable loadingInitial = false;
@@ -206,4 +215,4 @@ class ActivityStore {
     }
 }
 
-export default createContext(new ActivityStore())
+//export default createContext(new ActivityStore())
