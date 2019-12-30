@@ -3,7 +3,7 @@ import { IActivity } from '../models/activity';
 import { history } from '../..';
 import { toast } from 'react-toastify';
 import { IUser, IUserFormValues } from '../models/user';
-import { request } from 'http';
+
 
 axios.defaults.baseURL = 'https://localhost:44333/api';
 
@@ -12,8 +12,7 @@ axios.interceptors.request.use((config) => {
     const token = window.localStorage.getItem('jwt');
     if(token)
     {
-        config.headers.Authorization = `Bearer ${token}`;
-        
+        config.headers.Authorization = `Bearer ${token}`;        
     };
     return config
 }, error => {

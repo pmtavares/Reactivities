@@ -1,5 +1,5 @@
-import {observable, action, computed, configure, runInAction} from 'mobx';
-import { createContext, SyntheticEvent } from 'react';
+import {observable, action, computed, runInAction} from 'mobx';
+import { SyntheticEvent } from 'react';
 import { IActivity } from '../models/activity';
 import agent from '../api/agent';
 import {history} from '../../index';
@@ -14,11 +14,11 @@ import { RootStore } from './rootStore';
 
 
 export default class ActivityStore {
-    //rootStore: RootStore;
+    rootStore: RootStore;
 
-    constructor()
+    constructor(rootStore: RootStore)
     {
-        //this.rootStore = rootStore;
+        this.rootStore = rootStore;
     }
 
 
