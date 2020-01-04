@@ -27,6 +27,8 @@ MediatR 7.0
 
 AutoMapper.Extentions.Microsoft.DependencyInjection - 6.1.1 - Application Business Logic
 
+Microsoft.EntityFrameworkCore.Proxies - 2.2.6 Persistent Project (Lasizn loading) 
+
 ### Front end installation
 ##### Axios: npm install axios
 ##### Semantic UI: npm install semantic-ui-react 

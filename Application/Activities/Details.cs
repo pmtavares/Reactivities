@@ -31,13 +31,17 @@ namespace Application.Activities
                 _mapper = mapper;
             }
             public async Task<ActivityDto> Handle(Query request, CancellationToken cancellationToken)
-            {                
+            {
+
+                /* Eager loading : Included classes need to have virtual word removed
                 var activity = await _context.Activities
                     .Include(x => x.UserActivities)
                     .ThenInclude(x => x.AppUser)
-                    .SingleOrDefaultAsync(x => x.Id == request.Id);
+                    .SingleOrDefaultAsync(x => x.Id == request.Id); */
+                var activity = await _context.Activities
+                    .FindAsync(request.Id);
 
-                if(activity == null)
+                if (activity == null)
                 {
                     throw new RestException(HttpStatusCode.NotFound, new
                     {

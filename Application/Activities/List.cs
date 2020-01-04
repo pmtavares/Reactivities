@@ -28,9 +28,13 @@ namespace Application.Activities
 
             public async Task<List<ActivityDto>> Handle(Query request, CancellationToken cancellationToken)
             {
+
+                /* Eager loading : Included classes need to have virtual word removed
+                 var activities = await _context.Activities
+                     .Include(x => x.UserActivities)
+                     .ThenInclude(x => x.AppUser)
+                     .ToListAsync(); */
                 var activities = await _context.Activities
-                    .Include(x => x.UserActivities)
-                    .ThenInclude(x => x.AppUser)
                     .ToListAsync();
 
                 var activityToReturn = _mapper.Map<List<Activity>, List<ActivityDto>>(activities);

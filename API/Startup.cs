@@ -44,6 +44,7 @@ namespace API
         {
             services.AddDbContext<DataContext>(
                 options => {
+                    options.UseLazyLoadingProxies(); //Lazy Loading load
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
 
                 }    
