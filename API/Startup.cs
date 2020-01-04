@@ -26,6 +26,7 @@ using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using AutoMapper;
 
 namespace API
 {
@@ -57,6 +58,8 @@ namespace API
                 });
             });
             services.AddMediatR(typeof(List.Handler).Assembly);
+
+            services.AddAutoMapper(typeof(List.Handler)); //AutoMapper dependency
 
             services.AddMvc(opt =>
                     {

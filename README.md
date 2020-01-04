@@ -25,6 +25,8 @@ Watch Run: dotnet watch run (works only inside the startup project)
 ### Back end installation
 MediatR 7.0
 
+AutoMapper.Extentions.Microsoft.DependencyInjection - 6.1.1 - Application Business Logic
+
 ### Front end installation
 ##### Axios: npm install axios
 ##### Semantic UI: npm install semantic-ui-react 

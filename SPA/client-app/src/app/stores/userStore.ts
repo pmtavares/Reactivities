@@ -41,8 +41,9 @@ export default class UserStore
 
     @action logout = () =>
     {
-        this.rootStore.commonStore.setToken(null);
+        this.rootStore.commonStore.setToken(null);         
         history.push('/');
+        window.location.reload();
     }
 
     @action getUser = async ()=>
