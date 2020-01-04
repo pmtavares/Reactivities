@@ -79,6 +79,16 @@ namespace API
             identityBuilder.AddEntityFrameworkStores<DataContext>();
             identityBuilder.AddSignInManager<SignInManager<AppUser>>();
 
+            //Add policy 
+            services.AddAuthorization(opt => {
+                opt.AddPolicy("IsActivityHost", policy =>
+                {
+                    policy.Requirements.Add(new HostRequirements());
+                });
+            });
+            services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
+
+
             //Add JWT 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("my ultra secret key"));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

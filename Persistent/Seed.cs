@@ -24,18 +24,21 @@ namespace Persistent
                 {
                     new AppUser
                     {
+                        Id = "a",
                         DisplayName = "Pedro",
                         UserName = "pedro",
                         Email = "pedro@pedro.com"
                     },
                     new AppUser
                     {
+                        Id = "b",
                         DisplayName = "Tavares",
                         UserName = "tavares",
                         Email = "tavares@tavares.com"
                     },
                     new AppUser
                     {
+                        Id = "c",
                         DisplayName = "Mauricio",
                         UserName = "mauricio",
                         Email = "mauricio@mauricio.com"
@@ -60,6 +63,13 @@ namespace Persistent
                         Category = "drinks",
                         City = "London",
                         Venue = "Pub",
+                        UserActivities = new List<UserActivity>{
+                            new UserActivity {
+                                AppUserId = "a",
+                                IsHost = true,
+                                DateJoined = DateTime.Now.AddMonths(-2)
+                            }
+                        }
                     },
                     new Activity
                     {
@@ -69,6 +79,13 @@ namespace Persistent
                         Category = "culture",
                         City = "Paris",
                         Venue = "Louvre",
+                        UserActivities = new List<UserActivity>{
+                            new UserActivity {
+                                AppUserId = "a",
+                                IsHost = true,
+                                DateJoined = DateTime.Now.AddMonths(-2)
+                            }
+                        }
                     },
                     new Activity
                     {
@@ -78,6 +95,13 @@ namespace Persistent
                         Category = "culture",
                         City = "London",
                         Venue = "Natural History Museum",
+                         UserActivities = new List<UserActivity>{
+                            new UserActivity {
+                                AppUserId = "b",
+                                IsHost = true,
+                                DateJoined = DateTime.Now.AddMonths(-2)
+                            }
+                        }
                     },
                     new Activity
                     {
@@ -87,6 +111,13 @@ namespace Persistent
                         Category = "music",
                         City = "London",
                         Venue = "O2 Arena",
+                         UserActivities = new List<UserActivity>{
+                            new UserActivity {
+                                AppUserId = "a",
+                                IsHost = true,
+                                DateJoined = DateTime.Now.AddMonths(-2)
+                            }
+                        }
                     },
                     new Activity
                     {
@@ -96,6 +127,13 @@ namespace Persistent
                         Category = "drinks",
                         City = "London",
                         Venue = "Another pub",
+                         UserActivities = new List<UserActivity>{
+                            new UserActivity {
+                                AppUserId = "a",
+                                IsHost = true,
+                                DateJoined = DateTime.Now.AddMonths(-2)
+                            }
+                        }
                     },
                     new Activity
                     {
@@ -105,6 +143,13 @@ namespace Persistent
                         Category = "drinks",
                         City = "London",
                         Venue = "Yet another pub",
+                         UserActivities = new List<UserActivity>{
+                            new UserActivity {
+                                AppUserId = "b",
+                                IsHost = true,
+                                DateJoined = DateTime.Now.AddMonths(-2)
+                            }
+                        }
                     },
                     new Activity
                     {
@@ -114,6 +159,13 @@ namespace Persistent
                         Category = "drinks",
                         City = "London",
                         Venue = "Just another pub",
+                         UserActivities = new List<UserActivity>{
+                            new UserActivity {
+                                AppUserId = "b",
+                                IsHost = true,
+                                DateJoined = DateTime.Now.AddMonths(-3)
+                            }
+                        }
                     },
                     new Activity
                     {
@@ -123,6 +175,13 @@ namespace Persistent
                         Category = "music",
                         City = "London",
                         Venue = "Roundhouse Camden",
+                         UserActivities = new List<UserActivity>{
+                            new UserActivity {
+                                AppUserId = "a",
+                                IsHost = true,
+                                DateJoined = DateTime.Now.AddMonths(-1)
+                            }
+                        }
                     },
                     new Activity
                     {
@@ -141,6 +200,13 @@ namespace Persistent
                         Category = "film",
                         City = "London",
                         Venue = "Cinema",
+                         UserActivities = new List<UserActivity>{
+                            new UserActivity {
+                                AppUserId = "c",
+                                IsHost = true,
+                                DateJoined = DateTime.Now.AddMonths(-4)
+                            }
+                        }
                     }
                 };
 
