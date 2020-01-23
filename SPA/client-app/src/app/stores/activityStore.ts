@@ -5,6 +5,7 @@ import agent from '../api/agent';
 import {history} from '../../index';
 import { toast } from 'react-toastify';
 import { RootStore } from './rootStore';
+import { setActivityProps, createAttendee } from '../common/util/util';
 
 /*
 * In case we get a warning, go to tsconfig.js and add "experimentalDecorator": true
@@ -53,13 +54,15 @@ export default class ActivityStore {
 
     @action loadActivities = async () =>
     {
-        this.loadingInitial = true;        
+        this.loadingInitial = true;    
+        const user = this.rootStore.userStore.user!;    
         try
         {
             const activities = await agent.Activities.list();
             runInAction('Geting Activities',()=> {
                 activities.forEach(activity =>{
-                    activity.date = new Date(activity.date);
+                    setActivityProps(activity, user);
+
                     this.activityRegistry.set(activity.id, activity);
                 }); 
                 this.loadingInitial = false;    
@@ -84,10 +87,11 @@ export default class ActivityStore {
         }
         else{
             this.loadingInitial = true;
+            const user = this.rootStore.userStore.user!;    
             try{
                 activity = await agent.Activities.details(id);
                 runInAction('getting activity',() =>{
-                    activity.date = new Date(activity.date);
+                    setActivityProps(activity, user);
                     this.activity = activity;
                     this.activityRegistry.set(activity.id, activity);
                     this.loadingInitial = false;
@@ -211,6 +215,27 @@ export default class ActivityStore {
                 this.target = '';
             })
 
+        }
+    }
+
+    @action attendActivity = () =>{
+        const attendee = createAttendee(this.rootStore.userStore.user!);
+        if(this.activity)
+        {
+            this.activity.attendees.push(attendee);
+            this.activity.isGoing = true;
+            this.activityRegistry.set(this.activity.id, this.activity);
+        }
+    }
+
+    @action cancelAttendance = () =>{
+        if(this.activity)
+        {
+            this.activity.attendees = this.activity.attendees.filter(
+                a => a.username !== this.rootStore.userStore.user!.username
+            );
+            this.activity.isGoing = false;
+            this.activityRegistry.set(this.activity.id, this.activity);
         }
     }
 }
