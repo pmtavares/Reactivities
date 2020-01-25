@@ -1,4 +1,4 @@
-import { IAction } from "mobx";
+
 import { IUser } from "../../models/user";
 import { IActivity, IAttendee } from "../../models/activity";
 

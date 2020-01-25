@@ -4,7 +4,7 @@ import { IActivity } from '../../../app/models/activity';
 import { observer } from 'mobx-react-lite';
 import { Link } from 'react-router-dom';
 import {format} from 'date-fns';
-import { RootStore, RootStoreContext } from '../../../app/stores/rootStore';
+import { RootStoreContext } from '../../../app/stores/rootStore';
 
 const activityImageStyle = {
     filter: 'brightness(30%)'
@@ -21,7 +21,7 @@ const activityImageTextStyle = {
 
 const ActivityDetailedHeader: React.FC<{activity: IActivity}>= ({activity}) => {
     const rootStore = useContext(RootStoreContext);
-    const {attendActivity, cancelAttendance} = rootStore.activityStore;
+    const {attendActivity, cancelAttendance, loading} = rootStore.activityStore;
     return (
         <Segment.Group>
             <Segment basic attached='top' style={{padding: '0'}}>
@@ -46,8 +46,8 @@ const ActivityDetailedHeader: React.FC<{activity: IActivity}>= ({activity}) => {
                             color='orange' floated='right'>Manage Event
                     </Button>
                 ) : activity.isGoing ? (
-                    <Button onClick={cancelAttendance}>Cancel attendence</Button>
-                ): (<Button onClick={attendActivity} color='teal'>Join activity</Button>)}
+                    <Button loading={loading} onClick={cancelAttendance}>Cancel attendence</Button>
+                ): (<Button loading={loading} onClick={attendActivity} color='teal'>Join activity</Button>)}
                 
             </Segment>
         </Segment.Group>
