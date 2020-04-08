@@ -18,6 +18,8 @@ namespace Persistent
 
         public DbSet<UserActivity> UserActivities { get; set; }
 
+        public DbSet<Photo> Photos { get; set; }
+
 
         //Seed Data into table
         protected override void OnModelCreating(ModelBuilder builder)

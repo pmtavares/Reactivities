@@ -22,12 +22,16 @@ Watch Run: dotnet watch run (works only inside the startup project)
 >> Start: npm start
 
 
+
+
 ### Back end installation
 MediatR 7.0
 
 AutoMapper.Extentions.Microsoft.DependencyInjection - 6.1.1 - Application Business Logic
 
 Microsoft.EntityFrameworkCore.Proxies - 2.2.6 Persistent Project (Lasizn loading) 
+
+* To access secret.json file, click with the right button on the project and click on Manage User Secrets. The json file will open.
 
 ### Front end installation
 ##### Axios: npm install axios
@@ -39,3 +43,7 @@ Microsoft.EntityFrameworkCore.Proxies - 2.2.6 Persistent Project (Lasizn loading
 ##### npm install react-final-form final-form (Form validations)
 ##### npm install react-widgets react-widgets-date-fns
 ##### npm install revalidate
+
+
+
+
