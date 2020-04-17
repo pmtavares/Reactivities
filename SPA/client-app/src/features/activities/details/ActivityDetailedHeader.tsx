@@ -22,6 +22,7 @@ const activityImageTextStyle = {
 const ActivityDetailedHeader: React.FC<{activity: IActivity}>= ({activity}) => {
     const rootStore = useContext(RootStoreContext);
     const {attendActivity, cancelAttendance, loading} = rootStore.activityStore;
+    const host = activity.attendees.filter(x=> x.isHost)[0]
     return (
         <Segment.Group>
             <Segment basic attached='top' style={{padding: '0'}}>
@@ -32,7 +33,10 @@ const ActivityDetailedHeader: React.FC<{activity: IActivity}>= ({activity}) => {
                             <Item.Content>
                                 <Header size='huge' content={activity.title} style={{color:'white'}} />
                                 <p>{format(activity.date, 'eeee do MMM')}</p>
-                                <p>Hosted by <strong>Pedro</strong></p>
+                                <p>Hosted by 
+                                    <Link to={`/profile/${host.username}`}><strong> {host.displayName}</strong>
+                                    </Link>
+                                </p>
                             </Item.Content>
                         </Item>
                     </Item.Group>

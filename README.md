@@ -40,9 +40,11 @@ Microsoft.EntityFrameworkCore.Proxies - 2.2.6 Persistent Project (Lasizn loading
 ##### npm install mobx mobx-react-lite (5.14.2, 1.5.0)
 ##### npm install react-router-dom
 ##### npm install react-toastify
-##### npm install react-final-form final-form (Form validations)
+##### npm install react-final-form@6.3.0 final-form@4.16.1 (Form validations)
 ##### npm install react-widgets react-widgets-date-fns
 ##### npm install revalidate
+##### npm install npm install --save react-dropzone@10.1.5
+##### npm install --save react-cropper@1.2.0
 
 
 

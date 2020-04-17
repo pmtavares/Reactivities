@@ -14,6 +14,7 @@ import { RootStoreContext } from '../stores/rootStore';
 import LoadingComponent from './LoadingComponent';
 import ModalContainer from '../common/modals/ModalContainer';
 import RegisterForm from '../../features/user/RegisterForm';
+import ProfilePage from '../../features/profiles/ProfilePage';
 
 const App: React.FC<RouteComponentProps> = ({location}) => {
   const rootStore = useContext(RootStoreContext);
@@ -50,6 +51,7 @@ const App: React.FC<RouteComponentProps> = ({location}) => {
                 path={['/createActivity', '/manage/:id']} 
                 component={ActivityForm} />
               <Route exact path='/login' component={LoginForm} />
+              <Route exact path='/profile/:username' component={ProfilePage} />
               <Route exact path='/register' component={RegisterForm} />
               <Route component={NotFound} />
           </Switch>

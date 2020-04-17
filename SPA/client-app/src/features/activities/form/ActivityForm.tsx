@@ -1,5 +1,5 @@
 import React, {  useContext, useEffect }  from 'react';
-import { Form, Segment, Button, Grid } from 'semantic-ui-react';
+import {  Form, Segment, Button, Grid} from 'semantic-ui-react';
 import { ActivityFormValues } from '../../../app/models/activity';
 import { useState } from 'react';
 import {v4 as uuid} from 'uuid';
@@ -55,22 +55,7 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({match,histor
         }
     },[loadActivity, match.params.id])
 
-     /*const handleSubmitForm = () =>
-    {
-        if(activity.id.length === 0)
-        {
-            let newActivity = {
-                ...activity,
-                id: uuid()
-            }
-            createActivity(newActivity)
-            .then(()=> history.push(`/activities/${newActivity.id}`));
-        }
-        else{
-            editActivity(activity)
-            .then(()=> history.push(`/activities/${activity.id}`));
-        }
-    } */
+    
 
     
 
@@ -101,7 +86,7 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({match,histor
                     <FinalForm validate={validate}
                         initialValues ={activity}
                         onSubmit={handleFinalFormSubmit}
-                        render={({handleSubmit, invalid, pristine}) => (
+                        render={({handleSubmit, invalid, pristine}:any) => (
                             <Form onSubmit={handleSubmit} loading={loading} >
                                 <Field 
                                     name='title' 
