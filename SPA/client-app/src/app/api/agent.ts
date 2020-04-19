@@ -4,7 +4,6 @@ import { history } from '../..';
 import { toast } from 'react-toastify';
 import { IUser, IUserFormValues } from '../models/user';
 import { IProfile, IPhoto } from '../models/profile';
-import { identifier } from '@babel/types';
 
 
 
@@ -89,7 +88,8 @@ const Profiles = {
     get: (username: string): Promise<IProfile> => resquests.get(`/profiles/${username}`),
     uploadPhoto: (photo: Blob) : Promise<IPhoto> => resquests.postForm(`/photos`, photo),
     setMainPhoto: (id: string) => resquests.post(`/photos/${id}/setmain`, {}),
-    deletePhoto: (id: string) => resquests.del(`/photos/${id}`)
+    deletePhoto: (id: string) => resquests.del(`/photos/${id}`),
+    updateProfile:(profile: Partial<IProfile>) => resquests.put(`/profiles`, profile)
 }
 
 export default {
