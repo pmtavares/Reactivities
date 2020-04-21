@@ -28,6 +28,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using AutoMapper;
 using Infrastructure.Photos;
+using API.SignalR;
 
 namespace API
 {
@@ -56,12 +57,13 @@ namespace API
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000").AllowCredentials();
                 });
             });
             services.AddMediatR(typeof(List.Handler).Assembly);
 
             services.AddAutoMapper(typeof(List.Handler)); //AutoMapper dependency
+            services.AddSignalR();
 
             services.AddMvc(opt =>
                     {
@@ -102,6 +104,21 @@ namespace API
                         ValidateAudience = false,
                         ValidateIssuer = false
                     };
+                    //SignalR
+                    opt.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"]; //Comes from client
+                            var path = context.HttpContext.Request.Path;
+                            if(!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chat")))
+                            {
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+
+                        }
+                    };
                 });
 
             services.AddScoped<IJwtGenerator, JwtGenerator>();
@@ -134,6 +151,20 @@ namespace API
 
 
             app.UseMvc();
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ChatHub>("/chat");
+
+                
+
+            });
+            //For core 3.0
+            /*
+             * app.UseEndpoints(endpoints => { endpoints.MapControllers(); endpoints.MapHub<ChatHub>('/chat')})
+             * 
+             * 
+             */
         }
     }
 }

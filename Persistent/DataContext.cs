@@ -20,6 +20,8 @@ namespace Persistent
 
         public DbSet<Photo> Photos { get; set; }
 
+        public DbSet<Comment> Comments { get; set; }
+
 
         //Seed Data into table
         protected override void OnModelCreating(ModelBuilder builder)
