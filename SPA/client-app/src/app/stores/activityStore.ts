@@ -36,17 +36,21 @@ export default class ActivityStore {
 
     @action createHubConnection = (activityId: string) => {
         this.hubConnection = new HubConnectionBuilder()
-                                .withUrl('http://localhost:58333/chat', 
+                                .withUrl('http://localhost:58333/chat'!, 
                                     {accessTokenFactory: () => this.rootStore.commonStore.token!})
                                 .configureLogging(LogLevel.Information)
                                 .build();
 
-        this.hubConnection.start().then(() => console.log(this.hubConnection!.state))
+       /* this.hubConnection.start().then(() => this.hubConnection!.state)
                                   .then(() => {
-                                        console.log("Attempting to hoin the group");
                                         this.hubConnection!.invoke("AddToGroup", activityId)
                                   })
                                   .catch(error => console.log("Error establishing connection: ", error));
+*/
+        this.hubConnection
+            .start()
+            .then(() => console.log(this.hubConnection!.state))
+            .catch(error => console.log("Error establishing connection: ", error));                         
 
         this.hubConnection.on("ReceiveComment", comment => {
             runInAction(() => {
