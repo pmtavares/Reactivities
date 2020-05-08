@@ -41,6 +41,7 @@ export default class ActivityStore {
     @observable submitting = false;
     @observable target = '';
     @observable loading = false;
+    @observable.ref hubConnection: HubConnection | null = null;
     @observable activityCount = 0;
     @observable pageNumber = 0;
     @observable predicates = new Map();
@@ -90,7 +91,7 @@ export default class ActivityStore {
         this.pageNumber = page;
     }
 
-    @observable.ref hubConnection: HubConnection | null = null;
+   
 
     @action createHubConnection = (activityId: string) => {
         this.hubConnection = new HubConnectionBuilder()
@@ -99,27 +100,25 @@ export default class ActivityStore {
                                 .configureLogging(LogLevel.Information)
                                 .build();
 
-       /* this.hubConnection.start().then(() => this.hubConnection!.state)
-                                  .then(() => {
-                                        this.hubConnection!.invoke("AddToGroup", activityId)
-                                  })
-                                  .catch(error => console.log("Error establishing connection: ", error));
-*/
         this.hubConnection
             .start()
             .then(() => console.log(this.hubConnection!.state))
-            .catch(error => console.log("Error establishing connection: ", error));                         
+            .then(()=> {
+                this.hubConnection!.invoke("AddToGroup", activityId)
+            })
+            .catch(error => console.log("Error establishing connection: ", error));  
+            
+            this.hubConnection.on("Send", test => {console.log(test)})
 
         this.hubConnection.on("ReceiveComment", comment => {
+            console.log("Received?")
             runInAction(() => {
                 this.activity!.comments.push(comment)
             })
 
         })
 
-        this.hubConnection.on("Send", message => {
-            console.info(message)
-        });
+        
     }
 
     @action stopHubConnection = () => {

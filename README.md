@@ -46,6 +46,7 @@ Microsoft.EntityFrameworkCore.Proxies - 2.2.6 Persistent Project (Lasizn loading
 ##### npm install npm install --save react-dropzone@10.1.5
 ##### npm install --save react-cropper@1.2.0
 ##### npm install @microsoft/signalr@3.1.3
+##### npm install react-infinite-scroller
 
 
 
