@@ -1,4 +1,4 @@
-import {observable, action, computed, runInAction} from 'mobx';
+import {observable, action, computed, runInAction, reaction} from 'mobx';
 import { SyntheticEvent } from 'react';
 import { IActivity } from '../models/activity';
 import agent from '../api/agent';
@@ -13,7 +13,7 @@ import {HubConnection, LogLevel, HubConnectionBuilder} from '@microsoft/signalr'
 *
 */
 
-
+const LIMIT = 2;
 
 export default class ActivityStore {
     rootStore: RootStore;
@@ -21,6 +21,15 @@ export default class ActivityStore {
     constructor(rootStore: RootStore)
     {
         this.rootStore = rootStore;
+
+        reaction(
+            () => this.predicates.keys(),
+            () => {
+                this.pageNumber = 0;
+                this.activityRegistry.clear();
+                this.loadActivities();
+            }
+        )
     }
 
 
@@ -87,12 +96,49 @@ export default class ActivityStore {
         }
     }
 
+    @action setPredicates = (predicate: string, value: string | Date) => {
+        this.predicates.clear();
+        if(predicate !== 'all')
+        {
+            this.predicates.set(predicate, value);
+        }
+    } 
+
+    @computed get axiosParams()
+    {
+        const params = new URLSearchParams();
+        params.append('limit', String(LIMIT));
+        params.append('offset', `${this.pageNumber ? this.pageNumber * LIMIT : 0}`);
+        this.predicates.forEach((value, key)=> {
+            if(key === 'startDate')
+            {
+                params.append(key, value.toISOString())
+            }
+            else{
+                params.append(key, value);
+            }
+            
+        })
+        return params;
+    }
+    //Get total number of pages
+    @computed get totalPages()
+    {
+        return Math.ceil(this.activityCount / LIMIT);
+    }
     //When inserting a new activity, sort by date
     @computed get activitiesByDate()
     {
         return this.groupActivitiesByDate(Array.from(this.activityRegistry.values()));
         //return Array.from(this.activityRegistry.values())
           //      .sort((a,b) => Date.parse(a.date) - Date.parse(b.date));
+    }
+
+   
+
+    @action setPage = (page:number) =>
+    {    
+        this.pageNumber = page;
     }
 
     groupActivitiesByDate(activities: IActivity[]){
@@ -114,13 +160,16 @@ export default class ActivityStore {
         const user = this.rootStore.userStore.user!;    
         try
         {
-            const activities = await agent.Activities.list();
+            const activitiesEnvelope = await agent.Activities.list(this.axiosParams);
+            const {activities, activityCount} = activitiesEnvelope;
+
             runInAction('Geting Activities',()=> {
                 activities.forEach(activity =>{
                     setActivityProps(activity, user);
 
                     this.activityRegistry.set(activity.id, activity);
                 }); 
+                this.activityCount = activityCount;
                 this.loadingInitial = false;    
             })  
                      

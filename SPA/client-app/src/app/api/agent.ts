@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { IActivity } from '../models/activity';
+import { IActivity, IActivitiesEnvelop } from '../models/activity';
 import { history } from '../..';
 import { toast } from 'react-toastify';
 import { IUser, IUserFormValues } from '../models/user';
@@ -55,7 +55,7 @@ const responseBody = (response: AxiosResponse) => response.data;
 const sleep = (ms: number) => (response: AxiosResponse) =>
     new Promise<AxiosResponse>(resolve => setTimeout(()=> resolve(response), ms));
 
-const resquests = {
+const requests = {
     get: (url: string) => axios.get(url).then(sleep(1000)).then(responseBody),
     post: (url: string, body: {}) => axios.post(url, body).then(sleep(1000)).then(responseBody),
     put: (url: string, body: {}) => axios.put(url,body).then(sleep(1000)).then(responseBody),
@@ -69,19 +69,20 @@ const resquests = {
 }
 
 const Activities = {
-    list: () : Promise<IActivity[]>=> resquests.get('/activities'),
-    details: (id: string) => resquests.get(`/activities/${id}`),
-    create: (activity: IActivity) => resquests.post('/activities', activity),
-    update: (activity: IActivity) => resquests.put(`/activities/${activity.id}`, activity),
-    delete: (id: string) => resquests.del(`/activities/${id}`),
-    attend: (id: string) => resquests.post(`/activities/${id}/attend`,{}),
-    unattend: (id: string) =>resquests.del(`/activities/${id}/attend`)
+    list: (params: URLSearchParams) : Promise<IActivitiesEnvelop> => 
+        axios.get('/activities', {params: params}).then(sleep(1000)).then(responseBody),
+    details: (id: string) => requests.get(`/activities/${id}`),
+    create: (activity: IActivity) => requests.post('/activities', activity),
+    update: (activity: IActivity) => requests.put(`/activities/${activity.id}`, activity),
+    delete: (id: string) => requests.del(`/activities/${id}`),
+    attend: (id: string) => requests.post(`/activities/${id}/attend`,{}),
+    unattend: (id: string) =>requests.del(`/activities/${id}/attend`)
 }
 
 const User = {
-    current: (): Promise<IUser> => resquests.get('/user'),
-    login: (user: IUserFormValues): Promise<IUser> => resquests.post('/user/login', user),
-    register: (user: IUserFormValues): Promise<IUser> => resquests.post('/user/register', user)
+    current: (): Promise<IUser> => requests.get('/user'),
+    login: (user: IUserFormValues): Promise<IUser> => requests.post('/user/login', user),
+    register: (user: IUserFormValues): Promise<IUser> => requests.post('/user/register', user)
 }
 
 const Profiles = {
