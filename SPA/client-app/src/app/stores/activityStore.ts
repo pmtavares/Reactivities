@@ -41,60 +41,9 @@ export default class ActivityStore {
     @observable submitting = false;
     @observable target = '';
     @observable loading = false;
-    @observable.ref hubConnection: HubConnection | null = null;
-
-    @action createHubConnection = (activityId: string) => {
-        this.hubConnection = new HubConnectionBuilder()
-                                .withUrl('http://localhost:58333/chat'!, 
-                                    {accessTokenFactory: () => this.rootStore.commonStore.token!})
-                                .configureLogging(LogLevel.Information)
-                                .build();
-
-       /* this.hubConnection.start().then(() => this.hubConnection!.state)
-                                  .then(() => {
-                                        this.hubConnection!.invoke("AddToGroup", activityId)
-                                  })
-                                  .catch(error => console.log("Error establishing connection: ", error));
-*/
-        this.hubConnection
-            .start()
-            .then(() => console.log(this.hubConnection!.state))
-            .catch(error => console.log("Error establishing connection: ", error));                         
-
-        this.hubConnection.on("ReceiveComment", comment => {
-            runInAction(() => {
-                this.activity!.comments.push(comment)
-            })
-
-        })
-
-        this.hubConnection.on("Send", message => {
-            console.info(message)
-        });
-    }
-
-    @action stopHubConnection = () => {
-        this.hubConnection!.invoke("RemoveFromGroup", this.activity!.id)
-        .then(() => {
-            this.hubConnection!.stop();
-        })
-        .then(() => console.log("Connection stopped"))
-        .catch(err => console.log(err))
-    }
-
-    @action addComment = async (values: any) => {
-        values.activityId = this.activity!.id;
-        try
-        {
-            await this.hubConnection!.invoke("SendComment", values); //Method name in the api
-
-        }
-        catch(error)
-        {
-            console.log(error)
-            toast.error("Error: Could not add comment")
-        }
-    }
+    @observable activityCount = 0;
+    @observable pageNumber = 0;
+    @observable predicates = new Map();
 
     @action setPredicates = (predicate: string, value: string | Date) => {
         this.predicates.clear();
@@ -172,7 +121,7 @@ export default class ActivityStore {
                 this.activityCount = activityCount;
                 this.loadingInitial = false;    
             })  
-                     
+                         
         }
         catch(error)
         {
