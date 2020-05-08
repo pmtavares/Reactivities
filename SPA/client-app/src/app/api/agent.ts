@@ -86,16 +86,18 @@ const User = {
 }
 
 const Profiles = {
-    get: (username: string): Promise<IProfile> => resquests.get(`/profiles/${username}`),
-    uploadPhoto: (photo: Blob) : Promise<IPhoto> => resquests.postForm(`/photos`, photo),
-    setMainPhoto: (id: string) => resquests.post(`/photos/${id}/setmain`, {}),
-    deletePhoto: (id: string) => resquests.del(`/photos/${id}`),
-    updateProfile:(profile: Partial<IProfile>) => resquests.put(`/profiles`, profile),
-    follow:(username: string) => resquests.post(`/profiles/${username}/follow`, {}),
-    unfollow: (username: string) => resquests.del(`/profiles/${username}/follow`),
-    listFollowings: (username: string, predicate:string) => resquests.get(`/profiles/${username}
+    get: (username: string): Promise<IProfile> => requests.get(`/profiles/${username}`),
+    uploadPhoto: (photo: Blob) : Promise<IPhoto> => requests.postForm(`/photos`, photo),
+    setMainPhoto: (id: string) => requests.post(`/photos/${id}/setmain`, {}),
+    deletePhoto: (id: string) => requests.del(`/photos/${id}`),
+    updateProfile:(profile: Partial<IProfile>) => requests.put(`/profiles`, profile),
+    follow:(username: string) => requests.post(`/profiles/${username}/follow`, {}),
+    unfollow: (username: string) => requests.del(`/profiles/${username}/follow`),
+    listFollowings: (username: string, predicate:string) => requests.get(`/profiles/${username}
     /follow?predicate=${predicate}`)
 }
+
+
 
 export default {
     Activities,
