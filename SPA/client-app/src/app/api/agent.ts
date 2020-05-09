@@ -7,7 +7,7 @@ import { IProfile, IPhoto } from '../models/profile';
 
 
 
-axios.defaults.baseURL = 'https://localhost:44333/api';
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;//'http://localhost:58333/api';
 
 //Midleware for requests
 axios.interceptors.request.use((config) => {
@@ -29,10 +29,17 @@ axios.interceptors.response.use(undefined, error =>{
         toast.error("Network error - make sure api is running!");
     }
 
-    const {status, data, config} = error.response;
+    const {status, data, config, headers} = error.response;
     if(status === 404)
     {
         history.push('/notfound');
+    }
+
+    if(status === 401 && headers['www-authenticate']==='Bearer error="invalid_token", error_description="The token is expired"')
+    {
+        window.localStorage.removeItem('jwt');
+        history.push('/');
+        toast.info("Token expired, please login again")
     }
 
     if(status === 400 && config.method === 'get' && data.errors.hasOwnProperty('id'))
@@ -52,6 +59,7 @@ axios.interceptors.response.use(undefined, error =>{
 const responseBody = (response: AxiosResponse) => response.data;
 
 //Function to delay the requests. Then add a "then" to request in the requests function below
+//@ Remove the sleeps
 const sleep = (ms: number) => (response: AxiosResponse) =>
     new Promise<AxiosResponse>(resolve => setTimeout(()=> resolve(response), ms));
 

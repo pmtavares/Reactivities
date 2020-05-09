@@ -23,6 +23,7 @@ const ProfileActivities = () => {
 
     const handleTabChange = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, data: TabProps) => {
         let predicate;
+        
         switch(data.activeIndex)
         {
             case 1:
@@ -34,6 +35,8 @@ const ProfileActivities = () => {
             default:
                 predicate = "future";
         }
+
+        loadUserActivities(profile!.username, predicate)
     }
     return (
         <Tab.Pane>
@@ -50,7 +53,7 @@ const ProfileActivities = () => {
                     <Card.Group itemsPerRow={4}>
                         {userActivities.map((activity: IUserActivitiy) => (
                           <Card as={Link} to={`/activities/${activity.id}`} key={activity.id}>
-                            <Image src={`assets/categoryImages/${activity.category}.jpg`}/>
+                            <Image src={`/assets/categoryImages/${activity.category}.jpg`}/>
                             <Card.Content>
                                 <Card.Header textAlign='center'>
                                     {activity.title}

@@ -11,6 +11,10 @@ export const combineDateAndTime = (date: Date, time: Date) => {
 
     const dateString = `${year}-${month}-${day}`;
 
+    //For safari
+    //const dateString = date.toISOString().split('T')[0];
+    //const timeString = date.toISOString().split('T')[1]
+
     return new Date(dateString + ' ' + timeString);
 
 }

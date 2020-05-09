@@ -10,6 +10,7 @@ const HomePage = () =>
     const rootStore = useContext(RootStoreContext);
     const {isLoggedIn, user} = rootStore.userStore;
     const {openModal} = rootStore.modalStore;
+    const token = window.localStorage.getItem('jwt');
     return (
         <Segment inverted textAlign='center' vertical className='masthead'>
             <Container text>
@@ -18,7 +19,7 @@ const HomePage = () =>
                     </Image>
                     Reactivities
                 </Header>
-                {isLoggedIn && user ? (
+                {isLoggedIn && user && token? (
                     <Fragment>
                         <Header as='h3' inverted content={`Welcome back ${user.displayName}`}></Header>
                         <Button as={Link} to='/activities' size='huge' inverted>

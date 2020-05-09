@@ -55,10 +55,6 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({match,histor
         }
     },[loadActivity, match.params.id])
 
-    
-
-    
-
     const handleFinalFormSubmit = (values : any) => {
         const dateAndTime = combineDateAndTime(values.date, values.time);
         const {date, time, ...activity}=values;

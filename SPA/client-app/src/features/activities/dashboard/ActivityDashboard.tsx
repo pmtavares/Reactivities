@@ -6,6 +6,7 @@ import LoadingComponent from '../../../app/layout/LoadingComponent';
 import { RootStoreContext } from '../../../app/stores/rootStore';
 import InfiniteScroll from 'react-infinite-scroller';
 import ActivityFilters from './ActivityFilters';
+import ActivityListItemPlaceHolder from './ActivityListItemPlaceHolder';
 
 const ActivityDashboard: React.FC = () => {
     const rootStore = useContext(RootStoreContext);
@@ -26,10 +27,12 @@ const ActivityDashboard: React.FC = () => {
     }, [loadActivities]);
   
     //After setting loading to false above, we can put the following code
-    if(loadingInitial && pageNumber === 0) return <LoadingComponent content='Loading activities...' />
+   // if(loadingInitial && pageNumber === 0) return <LoadingComponent content='Loading activities...' />
     return (
         <Grid>
             <Grid.Column width={10}>
+            {loadingInitial && pageNumber === 0 ? (<ActivityListItemPlaceHolder />) :
+            (
                 <InfiniteScroll
                     pageStart={0}
                     loadMore={handleGetNext}
@@ -38,6 +41,11 @@ const ActivityDashboard: React.FC = () => {
                 >
                     <ActivityList />  
                 </InfiniteScroll>
+            )
+        
+        
+            }
+
                        
             </Grid.Column>
             <Grid.Column width={6}>
