@@ -15,6 +15,7 @@ import LoadingComponent from './LoadingComponent';
 import ModalContainer from '../common/modals/ModalContainer';
 import RegisterForm from '../../features/user/RegisterForm';
 import ProfilePage from '../../features/profiles/ProfilePage';
+import PrivateRoutes from './PrivateRoutes';
 
 const App: React.FC<RouteComponentProps> = ({location}) => {
   const rootStore = useContext(RootStoreContext);
@@ -43,16 +44,16 @@ const App: React.FC<RouteComponentProps> = ({location}) => {
       <Route path={'/(.+)'} render={()=> (
         <Fragment>
           <NavBar />
-          <Container style={{marginTop: '100px'}}>    
+          <Container style={{marginTop: '100px'} }>    
           <Switch>
-              <Route exact path='/activities' component={ActivityDashboard} />
-              <Route exact path='/activities/:id' component={ActivityDetails} />
-              <Route key={location.key} 
+              <PrivateRoutes exact path={'/activities'} component={ActivityDashboard} />
+              <PrivateRoutes exact path={'/activities/:id'} component={ActivityDetails} />
+              <PrivateRoutes key={location.key} 
                 path={['/createActivity', '/manage/:id']} 
                 component={ActivityForm} />
               <Route exact path='/login' component={LoginForm} />
-              <Route exact path='/profile/:username' component={ProfilePage} />
-              <Route exact path='/register' component={RegisterForm} />
+              <PrivateRoutes exact path='/profile/:username' component={ProfilePage} />
+              <PrivateRoutes exact path='/register' component={RegisterForm} />
               <Route component={NotFound} />
           </Switch>
           </Container>

@@ -1,4 +1,4 @@
-import {observable, action, computed, runInAction} from 'mobx';
+import {observable, action, computed, runInAction, reaction, toJS} from 'mobx';
 import { SyntheticEvent } from 'react';
 import { IActivity } from '../models/activity';
 import agent from '../api/agent';
@@ -13,7 +13,7 @@ import {HubConnection, LogLevel, HubConnectionBuilder} from '@microsoft/signalr'
 *
 */
 
-
+const LIMIT = 2;
 
 export default class ActivityStore {
     rootStore: RootStore;
@@ -21,6 +21,15 @@ export default class ActivityStore {
     constructor(rootStore: RootStore)
     {
         this.rootStore = rootStore;
+
+        reaction(
+            () => this.predicates.keys(),
+            () => {
+                this.pageNumber = 0;
+                this.activityRegistry.clear();
+                this.loadActivities();
+            }
+        )
     }
 
 
@@ -33,35 +42,88 @@ export default class ActivityStore {
     @observable target = '';
     @observable loading = false;
     @observable.ref hubConnection: HubConnection | null = null;
+    @observable activityCount = 0;
+    @observable pageNumber = 0;
+    @observable predicates = new Map();
+
+    @action setPredicates = (predicate: string, value: string | Date) => {
+        this.predicates.clear();
+        if(predicate !== 'all')
+        {
+            this.predicates.set(predicate, value);
+        }
+    } 
+
+    @computed get axiosParams()
+    {
+        const params = new URLSearchParams();
+        params.append('limit', String(LIMIT));
+        params.append('offset', `${this.pageNumber ? this.pageNumber * LIMIT : 0}`);
+        this.predicates.forEach((value, key)=> {
+            if(key === 'startDate')
+            {
+                params.append(key, value.toISOString())
+            }
+            else{
+                params.append(key, value);
+            }
+            
+        })
+        return params;
+    }
+    //Get total number of pages
+    @computed get totalPages()
+    {
+        return Math.ceil(this.activityCount / LIMIT);
+    }
+    //When inserting a new activity, sort by date
+    @computed get activitiesByDate()
+    {
+        return this.groupActivitiesByDate(Array.from(this.activityRegistry.values()));
+        //return Array.from(this.activityRegistry.values())
+          //      .sort((a,b) => Date.parse(a.date) - Date.parse(b.date));
+    }
+
+   
+
+    @action setPage = (page:number) =>
+    {    
+        this.pageNumber = page;
+    }
+
+   
 
     @action createHubConnection = (activityId: string) => {
         this.hubConnection = new HubConnectionBuilder()
-                                .withUrl('http://localhost:58333/chat'!, 
+                                .withUrl(process.env.REACT_APP_API_CHAT_URL!, 
                                     {accessTokenFactory: () => this.rootStore.commonStore.token!})
                                 .configureLogging(LogLevel.Information)
                                 .build();
 
-       /* this.hubConnection.start().then(() => this.hubConnection!.state)
-                                  .then(() => {
-                                        this.hubConnection!.invoke("AddToGroup", activityId)
-                                  })
-                                  .catch(error => console.log("Error establishing connection: ", error));
-*/
         this.hubConnection
             .start()
-            .then(() => console.log(this.hubConnection!.state))
-            .catch(error => console.log("Error establishing connection: ", error));                         
+            //.then(() => console.log(this.hubConnection!.state))
+            .then(()=> { console.log("Connection started Pedro")
+            }).finally( () => {
+                if(this.hubConnection!.state === 'Connected')
+                {
+                    this.hubConnection!.invoke("AddToGroup", activityId)
+                }
+                }
+            )
+            .catch(error => console.log("Error establishing connection: ", error));  
+            
+        this.hubConnection.on("Send", test => {console.log(test)})
 
         this.hubConnection.on("ReceiveComment", comment => {
+            console.log("Received?")
             runInAction(() => {
                 this.activity!.comments.push(comment)
             })
 
         })
 
-        this.hubConnection.on("Send", message => {
-            console.info(message)
-        });
+        
     }
 
     @action stopHubConnection = () => {
@@ -87,14 +149,6 @@ export default class ActivityStore {
         }
     }
 
-    //When inserting a new activity, sort by date
-    @computed get activitiesByDate()
-    {
-        return this.groupActivitiesByDate(Array.from(this.activityRegistry.values()));
-        //return Array.from(this.activityRegistry.values())
-          //      .sort((a,b) => Date.parse(a.date) - Date.parse(b.date));
-    }
-
     groupActivitiesByDate(activities: IActivity[]){
         const sortedActivities =  activities.sort(
             (a,b) => a.date.getTime() - b.date.getTime()
@@ -114,16 +168,19 @@ export default class ActivityStore {
         const user = this.rootStore.userStore.user!;    
         try
         {
-            const activities = await agent.Activities.list();
+            const activitiesEnvelope = await agent.Activities.list(this.axiosParams);
+            const {activities, activityCount} = activitiesEnvelope;
+
             runInAction('Geting Activities',()=> {
                 activities.forEach(activity =>{
                     setActivityProps(activity, user);
 
                     this.activityRegistry.set(activity.id, activity);
                 }); 
+                this.activityCount = activityCount;
                 this.loadingInitial = false;    
             })  
-                     
+                         
         }
         catch(error)
         {
@@ -139,7 +196,7 @@ export default class ActivityStore {
         if(activity)
         {
             this.activity = activity;
-            return activity;
+            return toJS(activity); // Turn observable into plain js objects, to stop  erros
         }
         else{
             this.loadingInitial = true;

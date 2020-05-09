@@ -29,19 +29,19 @@ const ActivityDetailChat = () => {
             <Segment attached>
             <Comment.Group>
                 {activity && activity.comments && activity.comments.map((comment) => (
-                        <Comment key={comment.id}>
-                            <Comment.Avatar src={comment.image || `/assets/user.png`}/>
-                            <Comment.Content>
-                                <Comment.Author as={Link} to={`/profiles/${comment.username}`}>
-                                    {comment.displayName}
-                                </Comment.Author>
-                                <Comment.Metadata>
-                                    {formatDistance(comment.createdAt, new Date())}
-                                </Comment.Metadata>
-                                <Comment.Text>{comment.body}</Comment.Text>
+                    <Comment key={comment.id}>
+                        <Comment.Avatar src={comment.image || '/assets/user.png'}/>
+                        <Comment.Content>
+                            <Comment.Author as={Link} to={`/profiles/${comment.username}`}>
+                                {comment.displayName}
+                            </Comment.Author>
+                            <Comment.Metadata>
+                                {formatDistance(comment.createdAt, new Date())}
+                            </Comment.Metadata>
+                            <Comment.Text>{comment.body}</Comment.Text>
 
-                            </Comment.Content>
-                        </Comment>
+                        </Comment.Content>
+                    </Comment>
                 ))
                 }
                 <FinalForm 

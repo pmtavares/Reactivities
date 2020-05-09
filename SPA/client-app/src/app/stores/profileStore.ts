@@ -1,6 +1,6 @@
 import { RootStore } from "./rootStore";
 import {observable, action, runInAction, computed, reaction} from 'mobx';
-import { IProfile, IPhoto } from "../models/profile";
+import { IProfile, IPhoto, IUserActivitiy } from "../models/profile";
 import agent from "../api/agent";
 import { toast } from 'react-toastify';
 
@@ -32,6 +32,8 @@ export default class ProfileStore {
     @observable deleteLoading = false;
     @observable followings: IProfile[] = [];
     @observable activeTab: number = 0;
+    @observable userActivities: IUserActivitiy[] = [];
+    @observable loadingActivities = false;
 
     @computed get isCurrentUser()
     {
@@ -41,6 +43,24 @@ export default class ProfileStore {
         }
         else{
             return false;
+        }
+    }
+
+    @action loadUserActivities = async (username: string, predicate?: string) => {
+        this.loadingActivities = true;
+        try{
+            const activities = await agent.Profiles.listActivities(username, predicate!);
+            runInAction(()=> {
+                this.userActivities = activities;
+                this.loadingActivities = false;
+            });
+        }
+        catch(error)
+        {
+            toast.error("Problem loading activities");
+            runInAction(()=> {
+                this.loadingActivities = false;
+            });
         }
     }
 

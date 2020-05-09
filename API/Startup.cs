@@ -30,6 +30,7 @@ using AutoMapper;
 using Infrastructure.Photos;
 using API.SignalR;
 using Application.Profiles;
+using Microsoft.AspNetCore.Internal;
 
 namespace API
 {
@@ -58,7 +59,12 @@ namespace API
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000").AllowCredentials();
+                    policy
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .WithExposedHeaders("WWW-Authenticate") //Use this header information on the response
+                    .WithOrigins("http://localhost:3000")
+                    .AllowCredentials();
                 });
             });
             services.AddMediatR(typeof(List.Handler).Assembly);
@@ -103,7 +109,9 @@ namespace API
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = key,
                         ValidateAudience = false,
-                        ValidateIssuer = false
+                        ValidateIssuer = false,
+                        ValidateLifetime = true, //Validate expire of token
+                        ClockSkew = TimeSpan.Zero //When token expire, we will get error
                     };
                     //SignalR
                     opt.Events = new JwtBearerEvents
@@ -144,23 +152,33 @@ namespace API
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 //app.UseHsts();
             }
-      
+
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             //app.UseHttpsRedirection();
             app.UseCors("CorsPolicy");
 
 
             app.UseAuthentication();
+            
+
+            app.UseMvc(routes => {
+                routes.MapSpaFallbackRoute(
+                    name: "SPA-Client",
+                    defaults: new { controller = "Fallback", action = "index" }
+                    );
+
+            });
 
 
-            app.UseMvc();
-
+           
             app.UseSignalR(routes =>
             {
                 routes.MapHub<ChatHub>("/chat");
-
                 
 
             });
+
             //For core 3.0
             /*
              * app.UseEndpoints(endpoints => { endpoints.MapControllers(); endpoints.MapHub<ChatHub>('/chat')})
