@@ -20,7 +20,7 @@ Watch Run: dotnet watch run (works only inside the startup project)
 ### Commands react app
 >> Create application: npx create-react-app my-app --use-npm --typescript
 >> Start: npm start
-
+>> Check user-secrets: dotnet user-secrets list
 
 
 
@@ -32,6 +32,9 @@ AutoMapper.Extentions.Microsoft.DependencyInjection - 6.1.1 - Application Busine
 Microsoft.EntityFrameworkCore.Proxies - 2.2.6 Persistent Project (Lasizn loading) 
 
 * To access secret.json file, click with the right button on the project and click on Manage User Secrets. The json file will open.
+
+* MYSQL: Pomelo.EntityFrameworkCore.MySql 2.2.0
+
 
 ### Front end installation
 ##### Axios: npm install axios

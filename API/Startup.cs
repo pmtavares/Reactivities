@@ -43,16 +43,41 @@ namespace API
 
         public IConfiguration Configuration { get; }
 
+        public void ConfigureDevelopmentServices(IServiceCollection services)
+        {
+            services.AddDbContext<DataContext>(
+                 options => {
+                 options.UseLazyLoadingProxies(); //Lazy Loading load
+                    options.UseMySql(Configuration.GetConnectionString("DefaultConnection")); //MySQL
+
+                 }
+             );
+
+            ConfigureServices(services);
+        }
+        public void ConfigureProductionServices(IServiceCollection services)
+        {
+            services.AddDbContext<DataContext>(
+                 options => {
+                     options.UseLazyLoadingProxies(); //Lazy Loading load
+                     options.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings")); 
+
+                 }
+             );
+
+            ConfigureServices(services);
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(
+            /*services.AddDbContext<DataContext>(
                 options => {
                     options.UseLazyLoadingProxies(); //Lazy Loading load
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
 
                 }    
-            );
+            );*/
             //, x => x.MigrationsAssembly("Persistent.Migrations") 
 
             services.AddCors(opt =>
@@ -160,15 +185,16 @@ namespace API
 
 
             app.UseAuthentication();
-            
+
 
             app.UseMvc(routes => {
-                routes.MapSpaFallbackRoute(
-                    name: "SPA-Client",
-                    defaults: new { controller = "Fallback", action = "index" }
-                    );
+                 routes.MapSpaFallbackRoute(
+                     name: "SPA-Client",
+                     defaults: new { controller = "Fallback", action = "index" }
+                     );
 
-            });
+             });
+             
 
 
            
