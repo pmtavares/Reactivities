@@ -35,6 +35,7 @@ Microsoft.EntityFrameworkCore.Proxies - 2.2.6 Persistent Project (Lasizn loading
 
 * MYSQL: Pomelo.EntityFrameworkCore.MySql 2.2.0
 
+* Security: NWebSec.AspNetCore.Middleware 2.0
 
 ### Front end installation
 ##### Axios: npm install axios
@@ -50,6 +51,9 @@ Microsoft.EntityFrameworkCore.Proxies - 2.2.6 Persistent Project (Lasizn loading
 ##### npm install --save react-cropper@1.2.0
 ##### npm install @microsoft/signalr@3.1.3
 ##### npm install react-infinite-scroller
+
+### After security configuration on Startup, add following:
+#### Semantic ui css: npm install semantic-ui-css 2.4.1
 
 
 

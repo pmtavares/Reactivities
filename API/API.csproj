@@ -3,6 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <!-- Deployment in Azure, Remove InProcess 
+        <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+    <AspNetCoreModuleName>AspNetCoreModule</AspNetCoreModuleName>
+    
+    -->
+
     <UserSecretsId>1081db6c-7ae0-42a5-b567-d5208671f1e9</UserSecretsId>
   </PropertyGroup>
 
@@ -13,6 +19,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.6" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
+    <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="2.0.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.0" />
   </ItemGroup>
 

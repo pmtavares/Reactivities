@@ -23,7 +23,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Value>>> Get()
         {
-            //var values = await _context.Values.ToListAsync();
+           // var values = await _context.Values.ToListAsync();
 
             return Ok("Pedro");
         }
@@ -32,8 +32,8 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Value>> Get(int id)
         {
-            var values = await _context.Values.FindAsync(id);
-            return Ok(values);
+          //  var values = await _context.Values.FindAsync(id);
+            return Ok(id);
         }
 
         // POST api/values

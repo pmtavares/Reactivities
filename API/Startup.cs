@@ -60,7 +60,7 @@ namespace API
             services.AddDbContext<DataContext>(
                  options => {
                      options.UseLazyLoadingProxies(); //Lazy Loading load
-                     options.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings")); 
+                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")); 
 
                  }
              );
@@ -177,6 +177,24 @@ namespace API
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 //app.UseHsts();
             }
+
+            //Security configurations: After built
+            app.UseXContentTypeOptions();
+            app.UseReferrerPolicy(opt => opt.NoReferrer());
+            app.UseXXssProtection(opt => opt.EnabledWithBlockMode()); //Prevent XXS reflected
+            app.UseXfo(opt => opt.Deny()); //Prevent Clickjacking and Iframes
+            app.UseCsp(opt => opt
+                    .BlockAllMixedContent() //Prevent mized http/https
+                    .StyleSources(s => s.Self().CustomSources("https://fonts.googleapis.com"))
+                    .FontSources(s => s.Self().CustomSources("https://fonts.gstatic.com", "data:"))
+                    .FormActions(s => s.Self())
+                    .FrameAncestors(s => s.Self())
+                    .ImageSources(s => s.Self().CustomSources("https://res.cloudinary.com", "blob:", "data:"))
+                    .ScriptSources(s => s.Self().CustomSources("sha256-EWcbgMMrMgeuxsyT4o76Gq/C5zilrLxiq6oTo2KDqus="))
+            );
+
+            //End security config
+
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
